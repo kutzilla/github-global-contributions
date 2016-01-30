@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>github-ingest</artifactId>
+    <artifactId>github-data-processing</artifactId>
 
 
 </project>
