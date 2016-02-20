@@ -1,11 +1,14 @@
 package de.fhms.mdm.github_data_processing;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Created by Matthias on 19.02.16.
  */
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 10000L;
 
     private String email;
 
