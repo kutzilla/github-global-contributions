@@ -43,9 +43,6 @@ public class CommitDataProcessor implements Serializable {
         return users;
     }
 
-    public JavaSparkContext getJavaSparkContext() {
-        return javaSparkContext;
-    }
 
     public void setJavaSparkContext(JavaSparkContext javaSparkContext) {
         this.javaSparkContext = javaSparkContext;
@@ -72,6 +69,10 @@ public class CommitDataProcessor implements Serializable {
         String email = (String) commitCommiter.get("email");
         user.setEmail(email);
         return user;
+    }
+
+    public JavaSparkContext getJavaSparkContext() {
+        return javaSparkContext;
     }
 
     public static void main(String[] args) {
