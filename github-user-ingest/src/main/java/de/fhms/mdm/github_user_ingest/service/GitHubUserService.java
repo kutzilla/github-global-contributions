@@ -1,7 +1,6 @@
-package de.fhms.mdm.github_user_ingest;
+package de.fhms.mdm.github_user_ingest.service;
 
-import de.fhms.mdm.github.data.ingest.bean.GithubUser;
-import de.fhms.mdm.github.data.ingest.util.ServiceUtil;
+import de.fhms.mdm.github_user_ingest.util.ServiceUtil;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;

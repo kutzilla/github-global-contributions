@@ -1,7 +1,6 @@
-package de.fhms.mdm.github_user_ingest;
+package de.fhms.mdm.github_user_ingest.service;
 
-import de.fhms.mdm.github.data.ingest.bean.GithubRepoId;
-import de.fhms.mdm.github.data.ingest.bean.GithubUser;
+
 import org.springframework.http.ResponseEntity;
 
 /**
