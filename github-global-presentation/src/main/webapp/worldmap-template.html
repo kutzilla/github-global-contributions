@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Github Global Commits</title>
+
+<!-- 
+ -->
+<link rel="stylesheet" href="jquery-ui-1.11.4.custom/jquery-ui.css">
+<script src="js/jquery-2.2.0.js"></script>
+<script src="jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/style.css">
+
+
+<link type="text/css" rel="stylesheet" href="http://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.css" />
+
+<script>
+	$(function() {
+		$("#from").datepicker({
+			defaultDate : "+1w",
+			changeMonth : true,
+			numberOfMonths : 1,
+			changeYear: true,
+			onClose : function(selectedDate) {
+				$("#to").datepicker("option", "minDate", selectedDate);
+				
+			}
+		});
+		$("#to").datepicker({
+			defaultDate : "+1w",
+			changeMonth : true,
+			numberOfMonths : 1,
+			changeYear: true,
+			onClose : function(selectedDate) {
+				$("#from").datepicker("option", "maxDate", selectedDate);
+				
+			}
+		});
+		$("#to").datepicker("option", "dateFormat", "dd.mm.yy");
+		$("#from").datepicker("option", "dateFormat", "dd.mm.yy");
+		var date = new Date();
+	    var str = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+		$("#from").val(str);
+		$("#to").val(str);
+		
+		$("#repochooser").selectmenu();
+	});
+</script>
+</head>
+<body>
+	<div class="header"> 
+
+		<h1 class="ueberschrift">Github Global Commits</h1>
+		<table class="menu">
+		  <tr>
+		    <th>
+		    	<select id="repochooser" ></select> 
+			</th>
+		    <th>
+		    	<label for="from">Von</label>
+				<input type="text" id="from" name="from">
+			</th>
+		    <th>
+		    	<label for="to">bis</label> 
+				 <input type="text" id="to" name="to">
+		    </th>
+		    <th><button onclick="userPressedLoad()">Generiere</button></th>
+		  </tr>
+		</table>
+		<img class="logo1" src="img/fhm.png" width="100px" height="100px">
+		<img class="logo2" src="img/github.png" width="100px" height="100px">
+	</div>
+
+	<div id="container"></div>
+
+	<script src="js/d3.min.js"></script>
+	<script src="js/topojson.v1.min.js"></script>
+	<script src="js/githubWorldmap.js"></script> 
+	<script type="text/javascript" src="http://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>
+</body>
+</html>
