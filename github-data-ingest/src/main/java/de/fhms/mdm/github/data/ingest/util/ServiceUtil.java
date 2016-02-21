@@ -1,6 +1,6 @@
 package de.fhms.mdm.github.data.ingest.util;
 
-import de.fhms.mdm.github.data.ingest.rest.service.GitHubUser;
+import de.fhms.mdm.github.data.ingest.rest.service.GithubUser;
 import org.apache.commons.net.util.Base64;
 import org.springframework.http.HttpHeaders;
 
@@ -18,12 +18,12 @@ public class ServiceUtil {
         return isoFormat.format(date);
 
     }
-    public static  HttpHeaders createHeadersWithCredentials(GitHubUser user){
+    public static  HttpHeaders createHeadersWithCredentials(GithubUser user){
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials(user));
         return headers;
     }
-    public static  String createCredentials(GitHubUser user){
+    public static  String createCredentials(GithubUser user){
         String plainCreds = user.getLogin() + ":" + user.getApiToken();
         byte[] plainCredsBytes = plainCreds.getBytes();
         byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);

@@ -1,8 +1,8 @@
 package de.fhms.mdm.github.data.ingest.client;
 
-import de.fhms.mdm.github.data.ingest.rest.service.GitHubRepoId;
-import de.fhms.mdm.github.data.ingest.rest.service.GitHubUser;
-import de.fhms.mdm.github.data.ingest.rest.service.GitHubCommitService;
+import de.fhms.mdm.github.data.ingest.rest.service.GithubRepoId;
+import de.fhms.mdm.github.data.ingest.rest.service.GithubUser;
+import de.fhms.mdm.github.data.ingest.rest.service.GithubCommitService;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
@@ -34,9 +34,9 @@ public class GithubCommitFetcher extends TableMapper<RepositoryWritable,Text> {
             String lastEtag = repositories.get(key)[0];
             String lastModifiedSince = repositories.get(key)[1];
 
-            final GitHubRepoId githubRepoId = new GitHubRepoId(owner, repositoryId);
-            final GitHubUser githubUser = new GitHubUser(API_TOKEN, CLIENT_USER);
-            GitHubCommitService githubCommitService = new GitHubCommitService(githubUser, githubRepoId, lastEtag);
+            final GithubRepoId githubRepoId = new GithubRepoId(owner, repositoryId);
+            final GithubUser githubUser = new GithubUser(API_TOKEN, CLIENT_USER);
+            GithubCommitService githubCommitService = new GithubCommitService(githubUser, githubRepoId, lastEtag);
 
             Date date = null;
             Calendar c = Calendar.getInstance();

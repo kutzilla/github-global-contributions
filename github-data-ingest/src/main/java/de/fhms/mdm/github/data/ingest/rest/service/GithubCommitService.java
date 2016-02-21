@@ -10,15 +10,15 @@ import java.util.*;
 /**
  * Created by Dave on 18.02.2016.
  */
-public class GitHubCommitService {
+public class GithubCommitService {
     private static final String URI = "https://api.github.com/repos";
 
-    private GitHubUser user;
-    private GitHubRepoId repoId;
+    private GithubUser user;
+    private GithubRepoId repoId;
     private RestTemplate restTemplate;
     private String lastEtag;
 
-    public GitHubCommitService(GitHubUser user, GitHubRepoId repoId, String lastEtag){
+    public GithubCommitService(GithubUser user, GithubRepoId repoId, String lastEtag){
         if(user != null){
             this.user = user;
         }

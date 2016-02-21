@@ -4,12 +4,12 @@ package de.fhms.mdm.github.data.ingest.rest.service;
  * Created by Dave on 18.02.2016.
  * Github User object, kapselt apitoken und login name für Restaufrufe
  */
-public class GitHubUser {
+public class GithubUser {
 
     private String apiToken;
     private String login;
 
-    public GitHubUser(String apiToken, String login){
+    public GithubUser(String apiToken, String login){
         this.apiToken  = apiToken;
         this.login = login;
     }
@@ -32,7 +32,7 @@ public class GitHubUser {
 
     @Override
     public String toString() {
-        return "GitHubUser{" +
+        return "GithubUser{" +
                 "apiToken='" + apiToken + '\'' +
                 ", login='" + login + '\'' +
                 '}';
