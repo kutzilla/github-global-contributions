@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static org.mockito.Mockito.mock;
-
 /**
  * Created by Matthias on 18.02.16.
  */

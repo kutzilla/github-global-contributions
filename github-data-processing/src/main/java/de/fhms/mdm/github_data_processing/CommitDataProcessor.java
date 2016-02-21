@@ -1,6 +1,5 @@
 package de.fhms.mdm.github_data_processing;
 
-import org.apache.spark.ExceptionFailure;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -9,6 +8,7 @@ import org.apache.spark.api.java.function.VoidFunction;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 /**
  * Created by Matthias on 19.02.16.
@@ -21,9 +21,28 @@ public class CommitDataProcessor implements Serializable {
 
     private JavaSparkContext javaSparkContext;
 
-    private static Function filter = (Function<String, Boolean>) s -> jsonHasAuthor(s);
+    private static Function filter = (Function<String, Boolean>) s -> {
+        try {
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject obj = (JSONObject) jsonObject.get("author");
+            return obj != null;
+        } catch (Exception e) {
+            return false;
+        }
+    };
 
-    private static Function map = (Function<String, User>) s -> getUserFromJson(s);
+    private static Function map = (Function<String, User>) s -> {
+        User user = new User();
+        JSONObject jsonObject = new JSONObject(s);
+        JSONObject committer = (JSONObject) jsonObject.get("committer");
+        String login = (String) committer.get("login");
+        user.setLogin(login);
+        JSONObject commit = (JSONObject) jsonObject.get("commit");
+        JSONObject commitCommiter = (JSONObject) commit.get("committer");
+        String email = (String) commitCommiter.get("email");
+        user.setEmail(email);
+        return user;
+    };
 
     private static VoidFunction<User> forEach = (VoidFunction<User>) user -> System.out.println(user);
 
@@ -43,33 +62,27 @@ public class CommitDataProcessor implements Serializable {
         return users;
     }
 
+    public JavaRDD<Commit> processCommitData(JavaRDD<String> inputFile) {
+        JavaRDD<Commit> commits = inputFile.map((Function<String, Commit>) s -> {
+            JSONObject object = new JSONObject(s);
+            JSONObject commitJson = (JSONObject) object.get("commit");
+            String message = (String) commitJson.get("message");
+            Commit commit = new Commit();
+            commit.setMessage(message);
+            return commit;
+        });
+        commits.foreach((VoidFunction<Commit>) commit -> {
+            System.out.println(commit);
+        });
+        return commits;
+    }
+
 
     public void setJavaSparkContext(JavaSparkContext javaSparkContext) {
         this.javaSparkContext = javaSparkContext;
     }
 
-    public static boolean jsonHasAuthor(String json) {
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONObject obj = (JSONObject) jsonObject.get("author");
-            return obj != null;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
-    public static User getUserFromJson(String json) throws Exception {
-        User user = new User();
-        JSONObject jsonObject = new JSONObject(json);
-        JSONObject committer = (JSONObject) jsonObject.get("committer");
-        String login = (String) committer.get("login");
-        user.setLogin(login);
-        JSONObject commit = (JSONObject) jsonObject.get("commit");
-        JSONObject commitCommiter = (JSONObject) commit.get("committer");
-        String email = (String) commitCommiter.get("email");
-        user.setEmail(email);
-        return user;
-    }
 
     public JavaSparkContext getJavaSparkContext() {
         return javaSparkContext;
@@ -84,5 +97,7 @@ public class CommitDataProcessor implements Serializable {
         CommitDataProcessor cdp = new CommitDataProcessor();
         cdp.setJavaSparkContext(new JavaSparkContext(sparkConf));
         cdp.processUserData(args[0]);
+        JavaRDD<String> textFile = cdp.getJavaSparkContext().textFile(args[0]);
+        cdp.processCommitData(textFile);
     }
 }

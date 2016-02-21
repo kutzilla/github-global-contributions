@@ -33,4 +33,5 @@ public class CommitDataProcessorTest extends SharedJavaSparkContext implements S
         expectedUser.setLogin("kutzilla");
         assertEquals(expectedUser, users.collect().get(0));
     }
+
 }
