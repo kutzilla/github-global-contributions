@@ -1,15 +1,13 @@
 package de.fhms.mdm.github.data.ingest.rest;
 
 
-import de.fhms.mdm.github.data.ingest.rest.service.GithubCommitService;
-import de.fhms.mdm.github.data.ingest.rest.service.GithubRepoId;
-import de.fhms.mdm.github.data.ingest.rest.service.GithubUser;
+import de.fhms.mdm.github.data.ingest.rest.service.GitHubRepoId;
+import de.fhms.mdm.github.data.ingest.rest.service.GitHubUser;
+import de.fhms.mdm.github.data.ingest.rest.service.GitHubCommitService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
-import javax.xml.bind.DatatypeConverter;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,9 +23,9 @@ public class ResttemplateTest {
     public static void main(String[] args){
 
 
-        GithubRepoId repoId = new GithubRepoId("kutzilla","marlin-cm");
-        GithubUser user = new GithubUser(API_TOKEN,"schleusenfrosch");
-        GithubCommitService eventService = new GithubCommitService(user,repoId,LAST_ETAG);
+        GitHubRepoId repoId = new GitHubRepoId("kutzilla","marlin-cm");
+        GitHubUser user = new GitHubUser(API_TOKEN,"schleusenfrosch");
+        GitHubCommitService eventService = new GitHubCommitService(user,repoId,LAST_ETAG);
 
         SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",Locale.ENGLISH);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));

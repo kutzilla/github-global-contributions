@@ -1,26 +1,24 @@
 package de.fhms.mdm.github.data.ingest.rest.service;
 
 import de.fhms.mdm.github.data.ingest.util.ServiceUtil;
-import org.apache.commons.net.util.Base64;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
 /**
  * Created by Dave on 18.02.2016.
  */
-public class GithubCommitService {
+public class GitHubCommitService {
     private static final String URI = "https://api.github.com/repos";
 
-    private GithubUser user;
-    private GithubRepoId repoId;
+    private GitHubUser user;
+    private GitHubRepoId repoId;
     private RestTemplate restTemplate;
     private String lastEtag;
 
-    public GithubCommitService(GithubUser user, GithubRepoId repoId, String lastEtag){
+    public GitHubCommitService(GitHubUser user, GitHubRepoId repoId, String lastEtag){
         if(user != null){
             this.user = user;
         }

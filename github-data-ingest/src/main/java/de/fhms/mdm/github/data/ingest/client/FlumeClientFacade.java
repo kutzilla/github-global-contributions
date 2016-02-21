@@ -3,24 +3,16 @@ package de.fhms.mdm.github.data.ingest.client;
 import org.apache.flume.EventDeliveryException;
 import org.apache.flume.api.RpcClient;
 import org.apache.flume.api.RpcClientFactory;
-import org.apache.flume.event.EventBuilder;
-import org.eclipse.egit.github.core.event.Event;
-import org.eclipse.egit.github.core.event.EventPayload;
-import org.eclipse.egit.github.core.event.PushPayload;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Created by Dave on 04.02.2016.
  */
-public class FlumeRpcClientFacade {
-    private static final Logger LOGGER = Logger.getLogger(FlumeRpcClientFacade.class.getSimpleName());
+public class FlumeClientFacade {
+    private static final Logger LOGGER = Logger.getLogger(FlumeClientFacade.class.getSimpleName());
     public static final String HEADER_EVENTTYPE = "EventType";
     public static final String HEADER_OWNER_NAME = "OwnerName";
     public static final String HEADER_REPOSITORY_NAME = "RepositoryName";

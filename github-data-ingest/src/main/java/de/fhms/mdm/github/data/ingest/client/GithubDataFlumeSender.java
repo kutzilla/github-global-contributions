@@ -40,17 +40,17 @@ public class GithubDataFlumeSender extends Reducer<RepositoryWritable,Text,Text,
             // Create a Flume Event object that encapsulates the sample data
             org.apache.flume.Event flumeEvent = EventBuilder.withBody(data.toString(), Charset.forName("UTF-8"));
             Map<String,String> headers = new HashMap<String,String>();
-            headers.put(FlumeRpcClientFacade.HEADER_EVENTTYPE,COMMITEVENT_TYPE);
-            headers.put(FlumeRpcClientFacade.HEADER_OWNER_NAME,owner);
-            headers.put(FlumeRpcClientFacade.HEADER_REPOSITORY_NAME,repository);
-            headers.put(FlumeRpcClientFacade.HEADER_COMMITTER_NAME,committer);
+            headers.put(FlumeClientFacade.HEADER_EVENTTYPE,COMMITEVENT_TYPE);
+            headers.put(FlumeClientFacade.HEADER_OWNER_NAME,owner);
+            headers.put(FlumeClientFacade.HEADER_REPOSITORY_NAME,repository);
+            headers.put(FlumeClientFacade.HEADER_COMMITTER_NAME,committer);
             flumeEvent.setHeaders(headers);
             flumeEvents.add(flumeEvent);
         }
 
 
 
-        final FlumeRpcClientFacade client = new FlumeRpcClientFacade();
+        final FlumeClientFacade client = new FlumeClientFacade();
         //senden des Flume Events
         client.init(HOST, PORT);
         client.sendDataToFlume(flumeEvents);

@@ -4,12 +4,11 @@ package de.fhms.mdm.github.data.ingest.rest.service;
  * Created by Dave on 18.02.2016.
  * Repo Id Object, kapselt owner und repo name
  */
-public class GithubRepoId {
-
+public class GitHubRepoId {
     private String owner;
     private String name;
 
-    public GithubRepoId(String owner, String name){
+    public GitHubRepoId(String owner, String name){
 
         if(owner == null){
             throw new IllegalArgumentException("owner may not be null");
@@ -39,7 +38,7 @@ public class GithubRepoId {
 
     @Override
     public String toString() {
-        return "GithubRepoId{" +
+        return "GitHubRepoId{" +
                 "owner='" + owner + '\'' +
                 ", name='" + name + '\'' +
                 '}';
