@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class GithubDataFlumeSender extends Reducer<RepositoryWritable,Text,Text,Text> {
+public class GithubDataFlumeSender extends Reducer<RepositoryWritable,Text,Text,Text> {
     private static final String COMMITEVENT_TYPE = "CommitEvent";
     private static final String HOST = "localhost";
     private static final int PORT = 41414;

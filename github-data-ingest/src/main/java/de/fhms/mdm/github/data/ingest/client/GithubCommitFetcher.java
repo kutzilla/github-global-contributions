@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.util.*;
 
-class GithubCommitFetcher extends TableMapper<RepositoryWritable,Text> {
+public class GithubCommitFetcher extends TableMapper<RepositoryWritable,Text> {
     private static final String API_TOKEN = "56cb7372fefdee1cefac895658c2270ad039d18f";
     private static final String CLIENT_USER = "schleusenfrosch";
 
