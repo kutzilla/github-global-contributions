@@ -1,7 +1,7 @@
 package de.fhms.mdm.github.data.ingest.client;
 
-import de.fhms.mdm.github.data.ingest.rest.service.GithubRepoId;
-import de.fhms.mdm.github.data.ingest.rest.service.GithubUser;
+import de.fhms.mdm.github.data.ingest.bean.GithubRepoId;
+import de.fhms.mdm.github.data.ingest.bean.GithubUser;
 import de.fhms.mdm.github.data.ingest.rest.service.GithubCommitService;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;

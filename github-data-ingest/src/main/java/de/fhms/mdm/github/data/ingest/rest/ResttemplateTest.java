@@ -1,8 +1,8 @@
 package de.fhms.mdm.github.data.ingest.rest;
 
 
-import de.fhms.mdm.github.data.ingest.rest.service.GithubRepoId;
-import de.fhms.mdm.github.data.ingest.rest.service.GithubUser;
+import de.fhms.mdm.github.data.ingest.bean.GithubRepoId;
+import de.fhms.mdm.github.data.ingest.bean.GithubUser;
 import de.fhms.mdm.github.data.ingest.rest.service.GithubCommitService;
 import org.json.JSONArray;
 import org.json.JSONObject;

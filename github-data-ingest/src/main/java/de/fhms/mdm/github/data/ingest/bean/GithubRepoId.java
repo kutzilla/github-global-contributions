@@ -1,4 +1,4 @@
-package de.fhms.mdm.github.data.ingest.rest.service;
+package de.fhms.mdm.github.data.ingest.bean;
 
 /**
  * Created by Dave on 18.02.2016.

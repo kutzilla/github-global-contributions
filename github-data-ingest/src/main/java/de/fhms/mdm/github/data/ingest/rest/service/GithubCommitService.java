@@ -1,5 +1,7 @@
 package de.fhms.mdm.github.data.ingest.rest.service;
 
+import de.fhms.mdm.github.data.ingest.bean.GithubRepoId;
+import de.fhms.mdm.github.data.ingest.bean.GithubUser;
 import de.fhms.mdm.github.data.ingest.util.ServiceUtil;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;

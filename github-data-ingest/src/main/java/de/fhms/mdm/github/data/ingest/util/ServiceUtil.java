@@ -1,6 +1,6 @@
 package de.fhms.mdm.github.data.ingest.util;
 
-import de.fhms.mdm.github.data.ingest.rest.service.GithubUser;
+import de.fhms.mdm.github.data.ingest.bean.GithubUser;
 import org.apache.commons.net.util.Base64;
 import org.springframework.http.HttpHeaders;
 
