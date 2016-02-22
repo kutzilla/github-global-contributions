@@ -8,7 +8,6 @@ import org.apache.spark.api.java.function.VoidFunction;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.function.Consumer;
 
 /**
  * Created by Matthias on 19.02.16.
