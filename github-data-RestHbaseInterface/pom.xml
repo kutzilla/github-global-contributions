@@ -52,6 +52,17 @@
 			<version>${cdh.hadoop.version}</version>
 		</dependency>
 		
+		        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+		
 	</dependencies>
 
 	<build>

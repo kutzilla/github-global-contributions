@@ -7,6 +7,7 @@ var height = width / 2;
 
 var topo, projection, path, svg, g;
 var country;
+var allCountries;
 
 var maxCommitsAmount = 0;
 
@@ -59,8 +60,23 @@ function dataReload(){
 	var repo = repoChooser.options[repoChooser.selectedIndex].value;
 	var von = document.getElementById('from').value;
 	var bis = document.getElementById('to').value;
-	var urlCountries = "http://localhost:8080/global-github-contributions/rest/json/github/getAllCommitsOfAllCountries?repo="+repo+"&from="+von+"&to="+bis
-	var urlCities = "http://localhost:8080/global-github-contributions/rest/json/github/getAllCommitsOfAllCities?repo="+repo+"&from="+von+"&to="+bis
+	var urlHBaseData = "http://localhost:8090/global-github-contributions/rest/json/github/getAllCommitsData?repo="+repo+"&from="+von+"&to="+bis;
+	var urlCountries = "http://localhost:8080/global-github-contributions/rest/json/github/getAllCommitsOfAllCountries?repo="+repo+"&from="+von+"&to="+bis;
+	var urlCities = "http://localhost:8080/global-github-contributions/rest/json/github/getAllCommitsOfAllCities?repo="+repo+"&from="+von+"&to="+bis;
+	$.getJSON(urlHBaseData, function(data) {
+//		console.log(data.cities); 
+		var cities = data.cities;
+		var countries = data.countries;
+		for (var i = 0; i < countries.length; i++) {
+			if (countries[i].amount > maxCommitsAmount) {
+				maxCommitsAmount = countries[i].amount;
+			}
+		}
+		allCountries = countries;
+		continueDraw(countries);
+		drawCities(topo, cities);
+	});
+	/**
 	$.getJSON(urlCountries, function(countries) {
 		for (var i = 0; i < countries.length; i++) {
 			if (countries[i].amount > maxCommitsAmount) {
@@ -74,6 +90,7 @@ function dataReload(){
 			drawCities(topo, cities);
 		});
 	});
+	*/
 }
 
 function loadComboRepo(repos){
@@ -93,7 +110,7 @@ function loadComboRepo(repos){
 	}
 }
 function getColorForCountryString(countryName, countries) {
-	console.log ( 'getColorForCountryString'+countryName+'; '+countries.length );
+//	console.log ( 'getColorForCountryString'+countryName+'; '+countries.length );
 	var r = 216;
 	var g = 220;
 	var b = 224;
@@ -150,16 +167,17 @@ function continueDraw(countries){
 	for(var i=0; i<allCountries.length; i++){
 		var aktCountry = allCountries[i];
 		var countryName = aktCountry.getAttribute("title");
-		console.log ( 'zeig her das country: '+aktCountry.html );
+//		console.log ( 'zeig her das country: '+aktCountry.html );
 		var gelb = getColorForCountryString(countryName, countries);
 		aktCountry.style.fill = gelb;
+		
 	}
 	
-	
+	/**
 	countries.forEach(function(country) {
 		addNumberAmountText(country.latitude, country.longitude, country.amount + "", country.country);
 	});
-	
+	*/ 
 }
 
 
@@ -234,10 +252,10 @@ function drawCityPoints(lat, lon, city, amount) {
 		.attr("cy", y)
 		.attr("fill","red")
 		.attr("fill-opacity",0.7)
-		.attr("class","tooltip"+city)
+		.attr("class","citytooltip"+city)
 		.attr("r", r);
 	
-	$(".tooltip"+city).qtip({ 
+	$(".citytooltip"+city).qtip({ 
 	    content: {
 	        text: city
 	    }
@@ -266,11 +284,15 @@ function redraw() {
 	d3.select('svg').remove();
 	setup(width, height);
 	// draw(topo);
+	dataReload();
+	initDraw(topo, allCountries);
+	/*
 	$.getJSON('http://localhost:8080/global-github-contributions/rest/json/github/getAllCommitsOfAllCountries',
 		function(data) {
 			var countries = data;
 			initDraw(topo, countries);
 	});
+	*/
 }
 
 function move() {

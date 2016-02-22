@@ -42,6 +42,15 @@ public class Country {
 		this.amount = amount;
 	}
 	
+	public void raiseCommit(){
+		this.amount++;
+	}
+	
+	@Override
+	public String toString() {
+		return "Country [country=" + country + ", amount=" + amount + "]";
+	}
+	
 	
 	
 	
