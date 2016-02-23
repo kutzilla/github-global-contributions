@@ -22,6 +22,7 @@ import java.util.Map;
 
 public class GithubDataFlumeSender extends Reducer<RepositoryWritable,Text,Text,Text> {
     private static final String COMMITEVENT_TYPE = "CommitEvent";
+    private static final String USERDATAEVENT_TYPE = "UserData";
     private static final String HOST = "localhost";
     private static final int PORT = 41414;
 
@@ -29,7 +30,7 @@ public class GithubDataFlumeSender extends Reducer<RepositoryWritable,Text,Text,
     public void reduce(RepositoryWritable key, Iterable<Text> value, Context context
     ) throws IOException, InterruptedException {
         System.out.println("##################### Reducer ####################\n");
-        List<Event> flumeEvents = new ArrayList<Event>();
+        List<Event> commitEvents = new ArrayList<Event>();
         String owner = key.getOwner().toString();
         String repository = key.getRepo().toString();
         String committer = key.getCommitter().toString();
@@ -45,15 +46,21 @@ public class GithubDataFlumeSender extends Reducer<RepositoryWritable,Text,Text,
             headers.put(FlumeClientFacade.HEADER_REPOSITORY_NAME,repository);
             headers.put(FlumeClientFacade.HEADER_COMMITTER_NAME,committer);
             flumeEvent.setHeaders(headers);
-            flumeEvents.add(flumeEvent);
+            commitEvents.add(flumeEvent);
         }
 
+        //User Data Event bauen
+        Event userDataEvent = EventBuilder.withBody(committer.toString(),Charset.forName("UTF-8"));
+        Map<String,String> headers = new HashMap<String,String>();
+        headers.put(FlumeClientFacade.HEADER_EVENTTYPE,USERDATAEVENT_TYPE);
+        userDataEvent.setHeaders(headers);
 
+        commitEvents.add(userDataEvent);
 
         final FlumeClientFacade client = new FlumeClientFacade();
         //senden des Flume Events
         client.init(HOST, PORT);
-        client.sendDataToFlume(flumeEvents);
+        client.sendDataToFlume(commitEvents);
         client.cleanUp();
 
         Configuration config = HBaseConfiguration.create();

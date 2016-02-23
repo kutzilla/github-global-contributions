@@ -1,7 +1,7 @@
-package de.fhms.mdm.github_user_ingest;
+package de.fhms.mdm.github_user_ingest.service;
 
-import de.fhms.mdm.github.data.ingest.bean.GithubUser;
-import de.fhms.mdm.github.data.ingest.util.ServiceUtil;
+import de.fhms.mdm.github_user_ingest.util.ServiceUtil;
+import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +23,7 @@ public class GitHubUserService {
     }
 
     //gibt einzelne UserDaten zurück
-    public ResponseEntity<Object> getUser(String userLogin){
+    public ResponseEntity<String> getUser(String userLogin){
         System.out.println("Entering getUser[" + userLogin +"]");
         String uri = URI + "/" + userLogin;
         boolean userExist = true;
@@ -34,7 +34,8 @@ public class GitHubUserService {
         HttpEntity<String> request = new HttpEntity<String>("", headers);
 
         if(doesUserExist(userLogin)) {
-            ResponseEntity<Object> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, request, Object.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, request, String.class);
+            System.out.println("Returning Response with status code: " + responseEntity.getStatusCode().value());
             return responseEntity;
         }
         return null;
@@ -50,8 +51,10 @@ public class GitHubUserService {
         try {
             responseEntity = restTemplate.exchange(uri, HttpMethod.HEAD, request, Object.class);
         }catch (HttpClientErrorException e){
-            System.out.println("User not found");
-            userExist = false;
+            if(e.getStatusCode().value() == 404) {
+                System.out.println("User not found");
+                userExist = false;
+            }
         }
         return userExist;
     }
