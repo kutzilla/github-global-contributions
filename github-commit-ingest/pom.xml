@@ -33,11 +33,6 @@
             <version>4.2.4.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.7.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>1.1.2</version>
@@ -59,10 +54,10 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>github-data-ingest</finalName>
+                    <finalName>github-commit-ingest</finalName>
                     <archive>
                         <manifest>
-                            <mainClass>de.fhms.mdm.github.data.ingest.client.CommitIngestJobClient</mainClass>
+                            <mainClass>de.fhms.mdm.github.data.ingest.client.GitHubCommitDataFetcher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
