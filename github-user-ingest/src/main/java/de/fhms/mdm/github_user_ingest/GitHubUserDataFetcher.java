@@ -18,7 +18,7 @@ public class GitHubUserDataFetcher extends Configured implements Tool{
 
     public int run(String[] strings) throws Exception {
         Job job = Job.getInstance();
-        job.setJobName("gitHubUserDataFetcher");
+        job.setJobName("GitHubUserDataFetcher");
         job.setJarByClass(GitHubUserDataFetcher.class);
         job.setMapperClass(GitHubUserDataMapper.class);
 

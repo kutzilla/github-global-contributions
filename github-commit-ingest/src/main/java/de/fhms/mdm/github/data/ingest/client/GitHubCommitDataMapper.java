@@ -27,6 +27,7 @@ public class GitHubCommitDataMapper extends TableMapper<RepositoryWritable,Text>
         Map<String,String[]> repositories= new HashMap(); //repository name, String[] etag;modified-since
         String owner = Bytes.toString(row.get()); //kutzilla
 
+
         //Proxy setzen, wenn auf Cluster VM ausgeführt
         Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
         while (e.hasMoreElements()) {

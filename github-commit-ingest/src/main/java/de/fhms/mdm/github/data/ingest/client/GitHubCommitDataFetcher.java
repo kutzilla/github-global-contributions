@@ -19,12 +19,12 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class GitHubCommitDataFetcher {
     private static final String HBASE_MASTER = "hbase.master";
     private static final String HBASE_MASTER_HOST = "quickstart.cloudera:60010";
-    private static final String PROXY = "10.60.17.102";
 
     public static void main(String[] args) throws Exception{
         Configuration conf = new Configuration();
         conf.set(HBASE_MASTER,HBASE_MASTER_HOST);
-        Job job = Job.getInstance(conf,"GithubFetcher");
+        Job job = Job.getInstance(conf);
+        job.setJobName("GitHubCommitDataFetcher");
 
         job.setJarByClass(GitHubCommitDataFetcher.class);
         job.setMapperClass(GitHubCommitDataMapper.class);
@@ -44,10 +44,11 @@ public class GitHubCommitDataFetcher {
                 job);
 
         job.setReducerClass(GitHubCommitDataReducer.class);
-
+        /*
         FileSystem fs = FileSystem.get(new Configuration());
         //Output löschen, steht nix drin, wird aber benötigt
         fs.delete(new Path("output"), true);
+        */
         FileOutputFormat.setOutputPath(job,new Path("output"));
 
 

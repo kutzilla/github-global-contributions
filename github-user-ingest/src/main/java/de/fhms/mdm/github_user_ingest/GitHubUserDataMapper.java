@@ -118,10 +118,14 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
         System.out.println("Entering saveLocation[" + location + "]");
         try {
             Table locationsTable = getTable(HBASE_LOCATIONS_TABLE_NAME,connection);
-            Put putUser = new Put(Bytes.toBytes(location));
-            putUser.add(Bytes.toBytes("location"), Bytes.toBytes("longitude"), Bytes.toBytes("none"));//Column family und wert
-            putUser.add(Bytes.toBytes("location"), Bytes.toBytes("latitude"), Bytes.toBytes("none"));//Column family und wert
-            locationsTable.put(putUser); //wegschreiben
+            Get get = new Get(Bytes.toBytes(location));
+            Result result = locationsTable.get(get);
+            if(result != null) {//Location noch nicht in der Tabelle, also rein schreiben
+                Put putUser = new Put(Bytes.toBytes(location));
+                putUser.add(Bytes.toBytes("location"), Bytes.toBytes("longitude"), Bytes.toBytes("none"));//Column family und wert
+                putUser.add(Bytes.toBytes("location"), Bytes.toBytes("latitude"), Bytes.toBytes("none"));//Column family und wert
+                locationsTable.put(putUser); //wegschreiben
+            }
         }catch (IOException ex){
             System.out.println("Couldn't save Location");
         }
