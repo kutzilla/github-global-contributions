@@ -2,6 +2,7 @@ package de.fhms.mdm.github.data.ingest.client;
 
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
@@ -43,7 +44,11 @@ public class GitHubCommitDataFetcher {
                 job);
 
         job.setReducerClass(GitHubCommitDataReducer.class);
-        FileOutputFormat.setOutputPath(job,new Path(args[0]));
+
+        FileSystem fs = FileSystem.get(new Configuration());
+        //Output löschen, steht nix drin, wird aber benötigt
+        fs.delete(new Path("output"), true);
+        FileOutputFormat.setOutputPath(job,new Path("output"));
 
 
 
