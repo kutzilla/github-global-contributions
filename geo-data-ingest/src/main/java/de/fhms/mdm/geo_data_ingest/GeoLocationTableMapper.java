@@ -10,6 +10,9 @@ import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 /**
  * Created by Matthias on 22.02.16.
@@ -32,11 +35,22 @@ public class GeoLocationTableMapper extends TableMapper<ImmutableBytesWritable, 
 
 
     public void map(ImmutableBytesWritable row, Result value, Context context) throws InterruptedException, IOException {
-        System.setProperty("http.proxyHost",GeoLocationFetcher.PROXY);
-        System.setProperty("http.proxyPort","8080");
-        System.setProperty("https.proxyHost",GeoLocationFetcher.PROXY);
-        System.setProperty("https.proxyPort","8080");
-
+        //Proxy setzen, wenn auf Cluster VM ausgeführt
+        Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration<InetAddress> ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                if (i.getHostAddress().toString().equals("10.60.67.4")) {
+                    System.out.println("########################### Setting Proxy ###########################");
+                    System.setProperty("http.proxyHost", "10.60.17.102");
+                    System.setProperty("http.proxyPort", "8080");
+                    System.setProperty("https.proxyHost", "10.60.17.102");
+                    System.setProperty("https.proxyPort", "8080");
+                }
+            }
+        }
         String key = new String(row.get());
 
         byte[] longitudeBytes = value.getValue(Bytes.toBytes(GeoLocationFetcher.LOCATION_COLUMN_FAMILY),

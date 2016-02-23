@@ -27,11 +27,6 @@ public class GeoLocationFetcher {
 
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("http.proxyHost",PROXY);
-        System.setProperty("http.proxyPort","8080");
-        System.setProperty("https.proxyHost",PROXY);
-        System.setProperty("https.proxyPort","8080");
-
         Configuration conf = HBaseConfiguration.create();
         conf.set(HBASE_MASTER, HBASE_MASTER_HOST);
         Connection connection = ConnectionFactory.createConnection(conf);
