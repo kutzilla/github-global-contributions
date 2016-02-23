@@ -32,6 +32,11 @@ public class GeoLocationTableMapper extends TableMapper<ImmutableBytesWritable, 
 
 
     public void map(ImmutableBytesWritable row, Result value, Context context) throws InterruptedException, IOException {
+        System.setProperty("http.proxyHost",GeoLocationFetcher.PROXY);
+        System.setProperty("http.proxyPort","8080");
+        System.setProperty("https.proxyHost",GeoLocationFetcher.PROXY);
+        System.setProperty("https.proxyPort","8080");
+
         String key = new String(row.get());
 
         byte[] longitudeBytes = value.getValue(Bytes.toBytes(GeoLocationFetcher.LOCATION_COLUMN_FAMILY),
