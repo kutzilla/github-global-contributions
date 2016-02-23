@@ -26,7 +26,10 @@ public class GithubCommitFetcher extends TableMapper<RepositoryWritable,Text> {
         String owner = Bytes.toString(row.get()); //kutzilla
 
         repositories = getValueHashMap(value);
-
+        System.setProperty("http.proxyHost","10.60.17.102");
+        System.setProperty("http.proxyPort","8080");
+        System.setProperty("https.proxyHost","10.60.17.102");
+        System.setProperty("https.proxyPort","8080");
 
         Set<String> keySet = repositories.keySet();
         for (String key : keySet) {

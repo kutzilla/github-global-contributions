@@ -1,61 +1,42 @@
 package de.fhms.mdm.github_user_ingest;
 
-import de.fhms.mdm.github_user_ingest.service.GitHubUserService;
-import de.fhms.mdm.github_user_ingest.service.GithubUser;
-import org.apache.commons.io.input.NullInputStream;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
+
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.hadoop.util.Tool;
 
 /**
  * Created by Dave on 21.02.2016.
  */
-public class GitHubUserDataFetcher {
-    private static final String BASE_PATH = "raw";
-    private static final String HDFS_PATH = "hdfs://quickstart.cloudera:8020/user/cloudera";
-    private static final String API_TOKEN = "56cb7372fefdee1cefac895658c2270ad039d18f";
-    private static final String CLIENT_USER = "schleusenfrosch";
+public class GitHubUserDataFetcher extends Configured implements Tool{
+    private static final String HDFS_INPUT_PATH = "hdfs://quickstart.cloudera:8020/user/cloudera/raw/user/*.dat";
 
-    /*
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        conf.set("fs.defaultFS",HDFS_PATH);
-
-        Job job = Job.getInstance(conf, "githubuserdatafetcher");
+    public int run(String[] strings) throws Exception {
+        Job job = Job.getInstance();
+        job.setJobName("gitHubUserDataFetcher");
         job.setJarByClass(GitHubUserDataFetcher.class);
+        job.setMapperClass(GitHubUserDataMapper.class);
 
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputFormatClass(NullOutputFormat.class);
+        FileInputFormat.addInputPath(job,new Path(HDFS_INPUT_PATH));
+        job.setNumReduceTasks(0);
 
-        FileSystem fileSystem = FileSystem.get(conf);
-        FileStatus[] owners = fileSystem.listStatus(new Path("/raw"));
-
-
-        if(owners.length>1) {
-            for (FileStatus file : owners) {
-                System.out.println(file.getPath().getName());
-            }
-        }
-
-
-
-        for (FileSystem repo : owners) {
-            for (FileSystem committer:repo.getChildFileSystems()) {
-                System.out.println(committer.getName());
-            }
-        }
-        GithubUser user = new GithubUser(API_TOKEN,CLIENT_USER);
-        GitHubUserService gitHubUserService = new GitHubUserService(user);
+        System.out.println("Starting Job###############################################");
+        return job.waitForCompletion(true) ? 0 : 1;
     }
-    */
+
+    public static void main(String[] args){
+        GitHubUserDataFetcher gitHubUserDataFetcher= new GitHubUserDataFetcher();
+        try {
+            gitHubUserDataFetcher.run(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

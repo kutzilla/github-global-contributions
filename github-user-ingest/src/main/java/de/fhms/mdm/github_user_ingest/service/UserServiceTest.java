@@ -1,6 +1,7 @@
 package de.fhms.mdm.github_user_ingest.service;
 
 
+import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -12,15 +13,18 @@ public class UserServiceTest {
     public static void main(String[] args){
         GithubRepoId repoId = new GithubRepoId("kutzilla","marlin-cm");
         GithubUser user = new GithubUser(API_TOKEN,"schleusenfrosch");
-        GitHubUserService userService = new GitHubUserService(user);
+        GitHubUserService gitHubUserService = new GitHubUserService(user);
 
         String userLogin = "kutzilla";
 
-        ResponseEntity<Object> response =  userService.getUser(userLogin);
+        ResponseEntity<String> responseEntity = gitHubUserService.getUser(userLogin);
+        System.out.println("Body: " + responseEntity.getBody());
+        JSONObject userObject = new JSONObject(responseEntity.getBody());
 
-        if(response != null) {
-            System.out.println(response.getBody().toString());
-        }
+        System.out.println(userObject.toString());
+        String location = userObject.getString("location");
+
+        System.out.println(location);
 
     }
 }
