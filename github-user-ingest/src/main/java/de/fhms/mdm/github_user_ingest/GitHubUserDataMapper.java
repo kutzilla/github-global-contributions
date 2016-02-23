@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 /**
  * Created by Dave on 22.02.2016.
@@ -38,12 +41,22 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
         boolean validLocation = false;
         boolean userAlreadyExisted = false;
 
-
-        //Proxy setzen
-        System.setProperty("http.proxyHost","10.60.17.102");
-        System.setProperty("http.proxyPort","8080");
-        System.setProperty("https.proxyHost","10.60.17.102");
-        System.setProperty("https.proxyPort","8080");
+        //Proxy setzen, wenn auf Cluster VM ausgeführt
+        Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration<InetAddress> ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                if (i.getHostAddress().toString().equals("10.60.67.4")) {
+                    System.out.println("########################### Setting Proxy ###########################");
+                    System.setProperty("http.proxyHost", "10.60.17.102");
+                    System.setProperty("http.proxyPort", "8080");
+                    System.setProperty("https.proxyHost", "10.60.17.102");
+                    System.setProperty("https.proxyPort", "8080");
+                }
+            }
+        }
 
 
         GithubUser user = new GithubUser(API_TOKEN, CLIENT_USER);
@@ -58,10 +71,12 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
         if(result.isEmpty()){//prüfen ob Eintrag bereits in der Meta Tabelle Users vorhanden
             System.out.println("New User:" + userLogin );
             ResponseEntity<String> responseEntity = gitHubUserService.getUser(userLogin);
-            JSONObject userObject = new JSONObject(responseEntity.getBody());
-            if(userObject.has("location")){
-                location = userObject.getString("location");
-                validLocation = true;
+            if(responseEntity!= null) {
+                JSONObject userObject = new JSONObject(responseEntity.getBody());
+                if(locationNotNull(userObject)){
+                    location = userObject.getString("location");
+                    validLocation = true;
+                }
             }
         }else{ //Eintrag bereits in der Meta Tabelle, also kein Aufruf der Api
             System.out.println("User already existed:" + userLogin);
@@ -128,5 +143,19 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
             e.printStackTrace();
         }
         return connection;
+    }
+
+    /**
+     * Prüft Ob Location String vorhanden und nicht NULL
+     * @param user
+     * @return
+     */
+    private boolean locationNotNull(JSONObject user){
+        if (user.has("location")){
+            if(!user.isNull("location")){
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -18,6 +18,7 @@ public class GeoLocationMapper extends Mapper<LongWritable, Text, Text, IntWrita
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         // Location auf Basis der Position in den Dateien im HDFS
+
         try {
             String location = value.toString().split(";")[5];
             context.write(new Text(location), ONE);
