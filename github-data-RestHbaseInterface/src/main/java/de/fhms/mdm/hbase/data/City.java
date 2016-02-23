@@ -40,6 +40,16 @@ public class City {
 		this.amount = amount;
 	}
 	
+	public void raiseCommit(){
+		this.amount++;
+	}
+	
+	@Override
+	public String toString() {
+		return "City [city=" + city + ", longitude=" + longitude
+				+ ", latitude=" + latitude + ", amount=" + amount + "]";
+	}
+	
 	
 	
 }
