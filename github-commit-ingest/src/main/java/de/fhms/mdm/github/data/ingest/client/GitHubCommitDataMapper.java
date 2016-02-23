@@ -13,23 +13,36 @@ import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.*;
 
-public class GithubCommitFetcher extends TableMapper<RepositoryWritable,Text> {
+public class GitHubCommitDataMapper extends TableMapper<RepositoryWritable,Text> {
     private static final String API_TOKEN = "56cb7372fefdee1cefac895658c2270ad039d18f";
     private static final String CLIENT_USER = "schleusenfrosch";
 
     @Override
     public void map(ImmutableBytesWritable row, Result value, Context context) throws IOException, InterruptedException {
-        System.out.println("################## Map job GithubCommitFetcher ###########################");
+        System.out.println("################## Map job GitHubCommitDataMapper ###########################");
         Map<String,String[]> repositories= new HashMap(); //repository name, String[] etag;modified-since
         String owner = Bytes.toString(row.get()); //kutzilla
 
-        repositories = getValueHashMap(value);
-        System.setProperty("http.proxyHost","10.60.17.102");
-        System.setProperty("http.proxyPort","8080");
-        System.setProperty("https.proxyHost","10.60.17.102");
-        System.setProperty("https.proxyPort","8080");
+        //Proxy setzen, wenn auf Cluster VM ausgeführt
+        Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration<InetAddress> ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                if (i.getHostAddress().toString().equals("10.60.67.4")) {
+                    System.out.println("########################### Setting Proxy ###########################");
+                    System.setProperty("http.proxyHost", "10.60.17.102");
+                    System.setProperty("http.proxyPort", "8080");
+                    System.setProperty("https.proxyHost", "10.60.17.102");
+                    System.setProperty("https.proxyPort", "8080");
+                }
+            }
+        }
 
         Set<String> keySet = repositories.keySet();
         for (String key : keySet) {

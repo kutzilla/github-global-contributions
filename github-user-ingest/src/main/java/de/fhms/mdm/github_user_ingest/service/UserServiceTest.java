@@ -15,16 +15,22 @@ public class UserServiceTest {
         GithubUser user = new GithubUser(API_TOKEN,"schleusenfrosch");
         GitHubUserService gitHubUserService = new GitHubUserService(user);
 
-        String userLogin = "kutzilla";
+        String userLogin = "marckleinebudde";
 
         ResponseEntity<String> responseEntity = gitHubUserService.getUser(userLogin);
         System.out.println("Body: " + responseEntity.getBody());
         JSONObject userObject = new JSONObject(responseEntity.getBody());
 
         System.out.println(userObject.toString());
-        String location = userObject.getString("location");
 
-        System.out.println(location);
+        if (userObject.has("location")) {
+            if (!userObject.isNull("location")) {
+                String location = userObject.getString("location");
+                System.out.println(location);
+            }
+
+        }
+
 
     }
 }
