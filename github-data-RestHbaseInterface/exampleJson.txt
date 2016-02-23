@@ -1,0 +1,21 @@
+hole alle Länder mit anzahl commits
+getAllCommitsOfAllCountries(repo, vonDate, bisDate)
+[
+{"country":"Germany","amount":900},
+{"country":"United States","amount":350}
+]
+
+
+getAllCommitsOfCountry(repo, country, vonDate, bisDate)
+[
+{"city":"Münster","longitude":51.9500023,"latitude":7.484016,"amount":5},
+{"city":"Hamm","longitude":51.6611642,"latitude":7.695978,"amount":2}
+]
+
+
+
+TODO:
+- Zoom to Country
+http://techslides.com/d3-world-maps-tooltips-zooming-and-queue
+
+-

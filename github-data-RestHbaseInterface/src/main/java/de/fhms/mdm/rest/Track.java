@@ -2,7 +2,7 @@ package de.fhms.mdm.rest;
 
 import java.io.Serializable;
 
-public class Track implements Serializable{
+public class Track implements Serializable {
 
 	String title;
 	String singer;
