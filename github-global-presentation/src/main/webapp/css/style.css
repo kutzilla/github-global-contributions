@@ -1,7 +1,7 @@
 /* CodePen demo */
 body {
 	background: #2a2a2b;
-	color: #fff;
+	color: #000;
 	text-align: center;
 	font-family: Arial, Helvetica;
 }
@@ -30,12 +30,14 @@ input {
 	font-size: 14px;
 	width: 125px;
 	height: 20px;
+	color: #000;
 	
 }
 
 button {
 	font-size: 18px;
 	width: 100px;
+	color: #000;
 	/**height: 20px;*/
 }
 
@@ -96,6 +98,12 @@ div.tooltip {
 	left: 20px;
 } 
 
+.infobar {
+	position: absolute;
+	top: 20px;
+	left: 700px;
+	text-align: left;
+}
 
 
 .ueberschrift {
@@ -106,12 +114,12 @@ div.tooltip {
 
 .logo1 {
 	position: absolute;
-	top: 15px;
-	right: 10px;
+	top: 5px;
+	right: 15px;
 }
 
 .logo2 {
 	position: absolute;
-	top: 15px;
+	top: 5px;
 	right: 120px;
 }

@@ -1,18 +1,95 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>Github Global Commits</title>
-
+<link rel="icon" type="image/png" href="img/fhm.png" />
 <!-- 
  -->
-<link rel="stylesheet" href="jquery-ui-1.11.4.custom/jquery-ui.css">
-<script src="js/jquery-2.2.0.js"></script>
-<script src="jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css">
 <link rel="stylesheet" href="css/style.css">
 
 
-<link type="text/css" rel="stylesheet" href="css/jquery.qtip.min.css" />
 
-<script>
+
+</head>
+<body>
+	<div class="header"> 
+
+		<h1 class="ueberschrift">Github Global Commits</h1>
+		<table class="menu">
+		  <tr>
+		    <th> 
+		    	<select id="repochooser" ></select> 
+			</th>
+		    <th>
+		    	<label for="from">Von</label>
+				<input type="text" id="from" name="from">
+			</th>
+		    <th>
+		    	<label for="to">bis</label> 
+				 <input type="text" id="to" name="to">
+		    </th>
+		    <th><button onclick="userPressedLoad()">Generiere</button></th>
+		  </tr>
+		</table>
+		<table class="infobar">
+			<tr>
+				<td>Repository:</td>
+				<td><b id="lblRepository"></b></td>
+			</tr>
+			<tr>
+				<td>Gesamtanzahl Commits:</td>
+				<td><b id="lblAmountAllCommits"></b></td>
+			</tr>
+			<tr>
+				<td>Ort:</td>
+				<td><b id="lblLocation"></b></td>
+			</tr>
+			<tr>
+				<td>Anzahl Commits Ort:</td>
+				<td><b id="lblAmountCommits"></b></td>
+			</tr>
+		</table>
+		<img class="logo1" src="img/fhm.png" width="90px" height="90px">
+		<img class="logo2" src="img/github.png" width="90px" height="90px">
+	</div>
+
+	<div id="container"></div>
+	
+	
+	<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog" style="margin-top: 100px;">
+    <div class="modal-dialog">
+    
+            <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h3 class="modal-title">Modal Header</h3>
+          <p><span>Repository: </span><span class="modal-repo"></span></p>
+          <p><span>Anzahl Commits: </span><span class="modal-commits"></span></p>
+        </div>
+
+	        <div class="modal-body" > 
+	          <p>Some text in the modal.</p>
+	           
+	        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+	<script src="js/jquery-2.2.0.js"></script>
+	<script src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+	<script src="js/topojson.v1.min.js"></script>
+	<script src="js/d3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/githubWorldmap.js"></script> 
+	<script>
 	$(function() {
 		$("#from").datepicker({
 			defaultDate : "+1w",
@@ -38,42 +115,11 @@
 		$("#from").datepicker("option", "dateFormat", "dd.mm.yy");
 		var date = new Date();
 	    var str = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
-		$("#from").val(str);
+		$("#from").val("01.01.2016");
 		$("#to").val(str);
 		
 		$("#repochooser").selectmenu();
 	});
 </script>
-</head>
-<body>
-	<div class="header"> 
-
-		<h1 class="ueberschrift">Github Global Commits</h1>
-		<table class="menu">
-		  <tr>
-		    <th>
-		    	<select id="repochooser" ></select> 
-			</th>
-		    <th>
-		    	<label for="from">Von</label>
-				<input type="text" id="from" name="from">
-			</th>
-		    <th>
-		    	<label for="to">bis</label> 
-				 <input type="text" id="to" name="to">
-		    </th>
-		    <th><button onclick="userPressedLoad()">Generiere</button></th>
-		  </tr>
-		</table>
-		<img class="logo1" src="img/fhm.png" width="100px" height="100px">
-		<img class="logo2" src="img/github.png" width="100px" height="100px">
-	</div>
-
-	<div id="container"></div>
-
-	<script src="js/d3.min.js"></script>
-	<script src="js/topojson.v1.min.js"></script>
-	<script src="js/githubWorldmap.js"></script> 
-	<script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 </body>
 </html>
