@@ -14,7 +14,7 @@ import org.apache.hadoop.util.Tool;
  * Created by Dave on 21.02.2016.
  */
 public class GitHubUserDataFetcher extends Configured implements Tool{
-    private static final String HDFS_INPUT_PATH = "hdfs://quickstart.cloudera:8020/user/cloudera/raw/users/*.dat";
+    private static final String HDFS_INPUT_PATH = "hdfs://quickstart.cloudera:8020/user/cloudera/data/users/processing/user-*";
 
     public int run(String[] strings) throws Exception {
         Job job = Job.getInstance();

@@ -36,7 +36,7 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
     ) throws IOException, InterruptedException {
         System.out.println("################## Map job GitHubUserDataMapper for " + value.toString() + " ###########################");
 
-        String userLogin = value.toString();
+        String userLogin = value.toString().trim();
         String location = null;
         boolean validLocation = false;
         boolean userAlreadyExisted = false;
@@ -124,6 +124,8 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
                 Put putUser = new Put(Bytes.toBytes(location));
                 putUser.add(Bytes.toBytes("location"), Bytes.toBytes("longitude"), Bytes.toBytes("none"));//Column family und wert
                 putUser.add(Bytes.toBytes("location"), Bytes.toBytes("latitude"), Bytes.toBytes("none"));//Column family und wert
+                putUser.add(Bytes.toBytes("location"), Bytes.toBytes("city"), Bytes.toBytes("none"));//Column family und wert
+                putUser.add(Bytes.toBytes("location"), Bytes.toBytes("country"), Bytes.toBytes("none"));//Column family und wert
                 locationsTable.put(putUser); //wegschreiben
             }
         }catch (IOException ex){
@@ -142,6 +144,7 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
         Connection connection = null;
         try {
             connection = ConnectionFactory.createConnection(config);
+
         } catch (IOException e) {
             System.out.println("Couldn't create connection");
             e.printStackTrace();
