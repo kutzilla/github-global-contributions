@@ -3,6 +3,7 @@ package de.fhms.mdm.github_data_processing;
 import com.holdenkarau.spark.testing.SharedJavaSparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -25,6 +26,7 @@ public class CommitDataProcessorTest extends SharedJavaSparkContext implements S
     }
 
     @Test
+    @Ignore
     public void testUserProcessing() {
         String testFilePath = getClass().getClassLoader().getResource("test_commit.dat").getFile();
         JavaRDD<User> users = testCommitDataProcessor.processUserData(testFilePath);
