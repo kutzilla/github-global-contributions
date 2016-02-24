@@ -5,7 +5,10 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
+import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 /**
  * Created by Matthias on 18.02.16.
@@ -27,5 +30,13 @@ public class GeoLocationMapperTest {
                 .withOutput(new Text("Münster, Germany"), new IntWritable(1))
                 .withOutput(new Text("Münster, Deutschland"), new IntWritable(1))
                 .runTest();
+    }
+
+    @Test
+    public void testLocateResult() {
+        GeoLocationTableMapper geoLocationMapper = new GeoLocationTableMapper();
+        String ms = "Tokyo";
+        String[] l = geoLocationMapper.locate(ms);
+        System.out.println(Arrays.toString(l));
     }
 }
