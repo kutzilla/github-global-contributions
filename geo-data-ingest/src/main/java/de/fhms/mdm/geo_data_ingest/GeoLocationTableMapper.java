@@ -86,7 +86,7 @@ public class GeoLocationTableMapper extends TableMapper<ImmutableBytesWritable, 
                 cityPut.add(Bytes.toBytes(GeoLocationFetcher.LOCATION_COLUMN_FAMILY),
                         Bytes.toBytes(COLUMN_CITY), Bytes.toBytes(city));
                 Put countryPut = new Put(row.get());
-                latPut.add(Bytes.toBytes(GeoLocationFetcher.LOCATION_COLUMN_FAMILY),
+                countryPut.add(Bytes.toBytes(GeoLocationFetcher.LOCATION_COLUMN_FAMILY),
                         Bytes.toBytes(COLUMN_COUNTRY), Bytes.toBytes(country));
                 context.write(row, longPut);
                 context.write(row, latPut);
@@ -107,6 +107,7 @@ public class GeoLocationTableMapper extends TableMapper<ImmutableBytesWritable, 
         if (results != null && results.length > 0) {
             GeocodingResult firstResult = results[0];
             AddressComponent[] addressComponent = firstResult.addressComponents;
+
             int localityIndex = -1;
             int countryIndex = -1;
             for (int i = 0; i < addressComponent.length; i++) {
@@ -124,6 +125,7 @@ public class GeoLocationTableMapper extends TableMapper<ImmutableBytesWritable, 
                 String[] longlat = firstResult.geometry.location.toString().split(",");
                 String longitude = longlat[0];
                 String latitude = longlat[1];
+                System.out.println(country);
                 return new String[] {city, country, longitude, latitude};
             } else if (localityIndex == -1 && countryIndex >= 0) {
                 String city = "none";
@@ -131,6 +133,7 @@ public class GeoLocationTableMapper extends TableMapper<ImmutableBytesWritable, 
                 String[] longlat = firstResult.geometry.location.toString().split(",");
                 String longitude = longlat[0];
                 String latitude = longlat[1];
+                System.out.println(country);
                 return new String[] {city, country, longitude, latitude};
             }
         }

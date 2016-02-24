@@ -149,10 +149,15 @@ public class CommitDataProcessor implements Serializable {
                             Bytes.toBytes(COLUMN_LONGITUDE));
                     byte[] latitudeBytes = result.getValue(Bytes.toBytes(LOCATION_COLUMN_FAMILY),
                             Bytes.toBytes(COLUMN_LATITUDE));
+                    byte[] cityBytes = result.getValue(Bytes.toBytes(LOCATION_COLUMN_FAMILY),
+                            Bytes.toBytes("city"));
+                    byte[] countryBytes = result.getValue(Bytes.toBytes(LOCATION_COLUMN_FAMILY),
+                            Bytes.toBytes("country"));
                     Location location = new Location();
-                    location.setCity(s);
                     location.setLongitude(new String(longitudeBytes));
                     location.setLatitude(new String(latitudeBytes));
+                    location.setCity(new String(cityBytes));
+                    location.setCountry(new String(countryBytes));
             return Arrays.asList(new Tuple2<>(s, location));
         });
 
@@ -193,6 +198,10 @@ public class CommitDataProcessor implements Serializable {
 
         JavaPairRDD<String, Tuple2<Location, String>> commits = userRdd.join(userMappedCommits);
 
+        commits.filter((Function<Tuple2<String, Tuple2<Location, String>>, Boolean>) v -> {
+            Location loc = v._2()._1();
+            return loc.getLongitude() != null && loc.getLatitude() != null;
+        });
 
         commits.foreach(pair -> {
             String login = pair._1();
