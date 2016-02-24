@@ -12,6 +12,7 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -22,7 +23,6 @@ import java.util.Map;
 
 public class GitHubCommitDataReducer extends Reducer<RepositoryWritable,Text,Text,Text> {
     private static final String COMMITEVENT_TYPE = "CommitEvent";
-    private static final String USERDATAEVENT_TYPE = "UserData";
     private static final String HOST = "localhost";
     private static final int PORT = 41414;
 
@@ -47,15 +47,9 @@ public class GitHubCommitDataReducer extends Reducer<RepositoryWritable,Text,Tex
             headers.put(FlumeClientFacade.HEADER_COMMITTER_NAME,committer);
             flumeEvent.setHeaders(headers);
             commitEvents.add(flumeEvent);
+
         }
-
-        //User Data Event bauen
-        Event userDataEvent = EventBuilder.withBody(committer.toString(),Charset.forName("UTF-8"));
-        Map<String,String> headers = new HashMap<String,String>();
-        headers.put(FlumeClientFacade.HEADER_EVENTTYPE,USERDATAEVENT_TYPE);
-        userDataEvent.setHeaders(headers);
-
-        commitEvents.add(userDataEvent);
+        context.write(new Text(""),new Text(committer));
 
         final FlumeClientFacade client = new FlumeClientFacade();
         //senden des Flume Events

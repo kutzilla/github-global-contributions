@@ -11,6 +11,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 
 /**
@@ -44,12 +46,14 @@ public class GitHubCommitDataFetcher {
                 job);
 
         job.setReducerClass(GitHubCommitDataReducer.class);
-        /*
+        LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
+
         FileSystem fs = FileSystem.get(new Configuration());
         //Output löschen, steht nix drin, wird aber benötigt
-        fs.delete(new Path("output"), true);
-        */
-        FileOutputFormat.setOutputPath(job,new Path("output"));
+        fs.delete(new Path("data/users/raw"), true);
+
+        job.getConfiguration().set("mapreduce.output.basename", "user");
+        FileOutputFormat.setOutputPath(job,new Path("data/users/raw"));
 
 
 

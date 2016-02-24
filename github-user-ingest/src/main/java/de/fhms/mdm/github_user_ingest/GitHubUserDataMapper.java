@@ -36,7 +36,7 @@ public class GitHubUserDataMapper extends Mapper<LongWritable,Text,NullOutputFor
     ) throws IOException, InterruptedException {
         System.out.println("################## Map job GitHubUserDataMapper for " + value.toString() + " ###########################");
 
-        String userLogin = value.toString();
+        String userLogin = value.toString().trim();
         String location = null;
         boolean validLocation = false;
         boolean userAlreadyExisted = false;
