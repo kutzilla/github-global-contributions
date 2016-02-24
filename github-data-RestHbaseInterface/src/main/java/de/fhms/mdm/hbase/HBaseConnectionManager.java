@@ -38,11 +38,11 @@ public class HBaseConnectionManager {
 	private static final String COLUMN_LOCATION_COUNTRY = "country";
 	private static final String COLUMN_LOCATION_LONGITUDE = "longitude";
 	private static final String COLUMN_LOCATION_LATITUDE = "latitude";
-	
+
 	private static final String COLUMN_FAMILY_USER = "user";
 	private static final String COLUMN_USER_EMAIL = "email";
 	private static final String COLUMN_USER_LOGIN = "login";
-	
+
 	private static final String COLUMN_FAMILY_COMMITDATA = "commit_data";
 	private static final String COLUMN_COMMITDATA_DATE = "date";
 
@@ -59,32 +59,6 @@ public class HBaseConnectionManager {
 		conf = HBaseConfiguration.create();
 	}
 
-	/**
-	 * Scan (or list) a table
-	 */
-	public static void getAllCommits() {
-		try {
-			HTable table = new HTable(conf, TABLENAME_COMMITS);
-			byte[] WERT = Bytes.toBytes("1444679400000");
-			Filter filter = new SingleColumnValueFilter(BYTE_COLUMN_FAMILY_COMMITDATA, BYTE_COLUMN_COMMITDATA_DATE,
-					CompareOp.GREATER_OR_EQUAL, WERT);
-			Scan s = new Scan();
-			s.setFilter(filter);
-			ResultScanner ss = table.getScanner(s);
-			for (Result r : ss) {
-				System.out.println("############NEW ROW");
-				for (KeyValue kv : r.raw()) {
-					System.out.print(new String(kv.getRow()) + " ");
-					System.out.print(new String(kv.getFamily()) + ":");
-					System.out.print(new String(kv.getQualifier()) + " ");
-					System.out.print(kv.getTimestamp() + " ");
-					System.out.println(new String(kv.getValue()));
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public List<String> getRepositories() {
 
@@ -121,16 +95,11 @@ public class HBaseConnectionManager {
 	}
 
 	public AllCommitData getAllCommits(String repo, long from, long to) {
-//		System.out.println("getAllCommits("+repo+","+from+","+to+")");
 		HashMap<String, City> resultCity = new HashMap<String, City>();
 		HashMap<String, Country> resultCountry = new HashMap<String, Country>();
-		Integer gesamtAmountCommits = 0;
-		Integer maxAmountCommitsCountry = 0;
-		Integer maxAmountCommitsCity = 0;
 		AllCommitData allCommitData = new AllCommitData();
 		try {
 			HTable table = new HTable(conf, TABLENAME_COMMITS);
-
 			Scan s = new Scan();
 			Filter filter = getFilter(repo, from, to);
 			if (filter != null) {
@@ -138,9 +107,13 @@ public class HBaseConnectionManager {
 			}
 
 			ResultScanner ss = table.getScanner(s);
+			
+			int i=0;
 			for (Result r : ss) {
 				handleLocationDatabaseInfos(r, resultCity, resultCountry, allCommitData);
+				i++;
 			}
+			System.out.println("Result Rows Size: "+i);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -169,17 +142,15 @@ public class HBaseConnectionManager {
 		}
 
 		if (repo != null && !repo.isEmpty()) {
-			useFilter = true;
 			String[] splitRepo = repo.split("/");
 			if (splitRepo.length == 2) {
-
+				useFilter = true;
 				String owner = splitRepo[0];
 				String name = splitRepo[1];
 				Filter filterRepoOwner = new SingleColumnValueFilter(BYTE_COLUMN_FAMILY_REPODATA,
 						BYTE_COLUMN_REPODATA_OWNER, CompareOp.EQUAL, new RegexStringComparator(owner));
-				Filter filterRepoName = new SingleColumnValueFilter(BYTE_COLUMN_FAMILY_COMMITDATA,
+				Filter filterRepoName = new SingleColumnValueFilter(BYTE_COLUMN_FAMILY_REPODATA,
 						BYTE_COLUMN_REPODATA_NAME, CompareOp.EQUAL, new RegexStringComparator(name));
-
 				allFilters.addFilter(filterRepoOwner);
 				allFilters.addFilter(filterRepoName);
 			}
@@ -195,27 +166,28 @@ public class HBaseConnectionManager {
 			HashMap<String, Country> resultCountry, AllCommitData allCommitData) {
 		String city = "";
 		String country = "";
-		String longitude = "0";
-		String latitude = "0";
+		String longitude = "";
+		String latitude = "";
 		String login = "";
 		String email = "";
-		int gesamtAmountCommits = 0;
 
 		for (KeyValue kv : r.raw()) {
 			String family = new String(kv.getFamily());
 			if (family.equals(COLUMN_FAMILY_LOCATION)) {
 				String qualifier = new String(kv.getQualifier());
 				String value = new String(kv.getValue()).trim();
-				if (qualifier.equals(COLUMN_LOCATION_CITY)) {
-					city = value;
-				} else if (qualifier.equals(COLUMN_LOCATION_COUNTRY)) {
-					country = value;
-				} else if (qualifier.equals(COLUMN_LOCATION_LONGITUDE)) {
-					longitude = value;
-				} else if (qualifier.equals(COLUMN_LOCATION_LATITUDE)) {
-					latitude = value;
+				if (!value.equals("none")) {
+					if (qualifier.equals(COLUMN_LOCATION_CITY)) {
+						city = value;
+					} else if (qualifier.equals(COLUMN_LOCATION_COUNTRY)) {
+						country = value;
+					} else if (qualifier.equals(COLUMN_LOCATION_LONGITUDE)) {
+						longitude = value;
+					} else if (qualifier.equals(COLUMN_LOCATION_LATITUDE)) {
+						latitude = value;
+					}
 				}
-			}else if(family.equals(COLUMN_FAMILY_USER)){
+			} else if (family.equals(COLUMN_FAMILY_USER)) {
 				String qualifier = new String(kv.getQualifier());
 				String value = new String(kv.getValue()).trim();
 				if (qualifier.equals(COLUMN_USER_LOGIN)) {
@@ -224,32 +196,41 @@ public class HBaseConnectionManager {
 					email = value;
 				}
 			}
-			
-			gesamtAmountCommits++;
-		}		
-		User user = null;
-		if(!login.isEmpty()){
-			user = new User(login, email);
 		}
-		allCommitData.setGesamtAmountCommits(gesamtAmountCommits);
+		allCommitData.raiseCommitAmount();
 		City cityObj = resultCity.get(city);
 		if (cityObj == null) {
-			cityObj = new City(city, Double.parseDouble(longitude), Double.parseDouble(latitude), 0);
-			resultCity.put(city, cityObj);
-		}
-		cityObj.raiseCommit();
-		if(user!=null){
-			cityObj.addUser(user);			
+			if (!longitude.isEmpty() && !latitude.isEmpty() && !city.isEmpty()) {
+				cityObj = new City(city, Double.parseDouble(longitude), Double.parseDouble(latitude), 0);
+				resultCity.put(city, cityObj);
+			}
 		}
 		Country countryObj = resultCountry.get(country);
 		if (countryObj == null) {
-			countryObj = new Country(country, 0, 0, 0);
-			resultCountry.put(country, countryObj);
+			if (!country.isEmpty()) {
+				countryObj = new Country(country, 0, 0, 0);
+				resultCountry.put(country, countryObj);
+			}
 		}
-		countryObj.raiseCommit();
-		if(user!=null){
-			countryObj.addUser(user);			
+
+		if (!login.isEmpty()) {
+			if (cityObj != null) {
+				cityObj.addUser(login, email);
+				cityObj.raiseCommit(login);
+			}
+			if (countryObj != null) {
+				countryObj.addUser(login, email);
+				countryObj.raiseCommit(login);
+			}
+		} else {
+			if (cityObj != null) {
+				cityObj.raiseCommit();
+			}
+			if (countryObj != null) {
+				countryObj.raiseCommit(login);
+			}
 		}
+
 	}
 
 	private City[] mapCities(HashMap<String, City> resultCity, AllCommitData allCommitData) {
@@ -260,7 +241,7 @@ public class HBaseConnectionManager {
 		while (ite1.hasNext()) {
 			Entry<String, City> set = ite1.next();
 			cities[i] = set.getValue();
-			if(maxAmountCommitsCity < set.getValue().getAmount()){
+			if (maxAmountCommitsCity < set.getValue().getAmount()) {
 				maxAmountCommitsCity = set.getValue().getAmount();
 			}
 			i++;
@@ -277,7 +258,7 @@ public class HBaseConnectionManager {
 		while (ite2.hasNext()) {
 			Entry<String, Country> set = ite2.next();
 			countries[i] = set.getValue();
-			if(maxAmountCommitsCountry < set.getValue().getAmount()){
+			if (maxAmountCommitsCountry < set.getValue().getAmount()) {
 				maxAmountCommitsCountry = set.getValue().getAmount();
 			}
 			i++;

@@ -1,13 +1,15 @@
 package de.fhms.mdm.hbase.data;
 
-public class User {
+public class User implements Comparable<User> {
 	private String login;
 	private String email;
+	private Integer amount;
 
 	public User(String login, String email) {
 		super();
 		this.login = login;
 		this.email = email;
+		amount = 0;
 	}
 
 	public String getLogin() {
@@ -25,10 +27,25 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+
+	public Integer getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Integer amount) {
+		this.amount = amount;
+	}
+
+	public void raiseCommits(){
+		this.amount++;
+	}
+	
+
 
 	@Override
 	public String toString() {
-		return "User [login=" + login + ", email=" + email + "]";
+		return "User [login=" + login + ", email=" + email + ", amount=" + amount + "]";
 	}
 
 	@Override
@@ -55,6 +72,11 @@ public class User {
 			return false;
 		return true;
 	}
+
+	@Override
+    public int compareTo(User o) {
+        return this.amount.compareTo(o.getAmount());
+    }
 
 	
 	

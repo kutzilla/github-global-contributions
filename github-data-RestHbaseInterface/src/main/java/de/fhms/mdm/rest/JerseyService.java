@@ -57,7 +57,7 @@ public class JerseyService {
 			@QueryParam("from") String from, @QueryParam("to") String to) {
 
 		long longVon = getTimeStamp(from);
-		long longBis = getTimeStamp(to);
+		long longBis = getTimeStamp(to) + 82799000;
 		HBaseConnectionManager connection = new HBaseConnectionManager();
 		if(repo !=null && repo.equals(REPO_ALLE)){
 			repo = null;
@@ -94,7 +94,13 @@ public class JerseyService {
 		Country co2 = new Country("France", 0, 0, 100);
 		countries[0] = co1;
 		countries[1] = co2; 
-		return new AllCommitData(cities, countries, 400, 300, 2);
+		AllCommitData acd = new AllCommitData();
+		acd.setCities(cities);
+		acd.setCountries(countries);
+		acd.setGesamtAmountCommits(400);
+		acd.setMaxAmountCommitsCity(300);
+		acd.setMaxAmountCommitsCountry(2);
+		return acd;
 	}
 
 	private long getTimeStamp(String time) {

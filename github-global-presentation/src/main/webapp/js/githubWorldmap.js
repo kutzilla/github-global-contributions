@@ -3,7 +3,8 @@ d3.select(window).on("resize", throttle);
 var zoom = d3.behavior.zoom().scaleExtent([ 1, 100 ]).on("zoom", move);
 
 var width = document.getElementById('container').offsetWidth;
-var height = width / 2;
+//var height = width / 2;
+var height = $(document).height()-120; 
 
 var topo, projection, path, svg, g;
 var country;
@@ -25,7 +26,21 @@ var tooltip = d3.select("#container").append("div").attr("class",
 
 setup(width, height);
 
-window.setInterval(dataReload, 5000);
+window.setInterval(dataReload, 60000);
+
+var myApp;
+myApp = myApp || (function () {
+    var pleaseWaitDiv = $('#pleaseWaitDialog');
+    return {
+        showWait: function() {
+            pleaseWaitDiv.modal();
+        },
+        hideWait: function () {
+            pleaseWaitDiv.modal('hide');
+        },
+
+    };
+})();
 
 
 function setup(width, height) {
@@ -45,10 +60,13 @@ d3.json("data/world-topo-min.json", function(error, world) {
 	topo = countries;
 	initDraw(topo, countries);
 	
-	var urlRepos = 'http://localhost:8090/global-github-contributions/rest/json/github/getAllRepos';
+	myApp.showWait();
+	
+	var urlRepos = 'http://10.60.67.4:8090/global-github-contributions/rest/json/github/getAllRepos';
 	$.getJSON(urlRepos, function(repos) {
 		loadComboRepo(repos);
 		dataReload();
+		myApp.hideWait();
 	});
 	
 });
@@ -60,13 +78,12 @@ function userPressedLoad(){
 function dataReload(){
 	var repoChooser = document.getElementById('repochooser');
 //	if(repoChooser.size > 0){	
+	myApp.showWait();
 		var repo = repoChooser.options[repoChooser.selectedIndex].value;
 		var von = document.getElementById('from').value;
 		var bis = document.getElementById('to').value;
-		var urlHBaseData = "http://localhost:8090/global-github-contributions/rest/json/github/getAllCommitsData?repo="+repo+"&from="+von+"&to="+bis;
-		//urlHBaseData = "http://localhost:8090/global-github-contributions/rest/json/github/getAllCommitsData";
-		var urlCountries = "http://localhost:8080/global-github-contributions/rest/json/github/getAllCommitsOfAllCountries?repo="+repo+"&from="+von+"&to="+bis;
-		var urlCities = "http://localhost:8080/global-github-contributions/rest/json/github/getAllCommitsOfAllCities?repo="+repo+"&from="+von+"&to="+bis;
+		var urlHBaseData = "http://10.60.67.4:8090/global-github-contributions/rest/json/github/getAllCommitsData?repo="+repo+"&from="+von+"&to="+bis;
+
 		$.getJSON(urlHBaseData, function(data) { 
 			console.log("neueDaten: cities:"+data.cities.length+", countries: "+data.countries.length); 
 			var cities = data.cities;
@@ -80,11 +97,40 @@ function dataReload(){
 			$("#lblAmountAllCommits").html(gesamtAmountCommits);
 			
 			continueDraw(countries); 
+			
+			
 			for (var cityPoint in cityPoints) {
-				$(".citytooltip"+cityPoint).remove(); 
+				var citynameclass = "citytooltip"+cityPoint.replace(/\s/g, "_");
+				$("."+citynameclass).remove(); 
 			}
 			drawCities(topo, cities);
+			myApp.hideWait();
+			
+			
+			checkIfCountiesExists();
+
+			
 		});
+}
+
+function checkIfCountiesExists(){
+	//check ob alle laender aus db und top uebereinstimmen
+
+	for (var j = 0; j < allCountries.length; j++) {
+		var aktC = allCountries[j];
+		var found = false;
+		for (var i = 0, keys = Object.keys(allSvgCountries), ii = keys.length; i < ii; i++) {
+			//console.log('key : ' + keys[i] + ' val : ' + allSvgCountries[keys[i]]);
+			var key = keys[i];
+			if(key === aktC.country){
+				found = true;
+			}
+		}
+		if(!found){
+			console.log("Kann Land nicht finden: "+key);
+		}
+	}
+	
 }
 
 function loadComboRepo(repos){
@@ -124,7 +170,7 @@ function getColorForCountryString(countryName, countries) {
 			}
 		}
 	}
-	return "rgb("+r+", "+g+", "+b+")";
+	return "rgb("+200+", "+200+", "+200+")";
 }
 
 function getColorForCountry(countryName, countries) {
@@ -135,6 +181,7 @@ function getColorForCountry(countryName, countries) {
 		for (var i = 0; i < countries.length; i++) {
 			var aktCountry = countries[i];
 			if (countryName === aktCountry.country) {
+				found = true;
 				var percent = aktCountry.amount / maxAmountCommitsCountry;
 				var newR = parseInt(r - (percent * 216));
 				var newG = parseInt(g - (percent * 153));
@@ -143,7 +190,7 @@ function getColorForCountry(countryName, countries) {
 			}
 		}
 	}
-	return rgbToHex(r, g, b);
+	return rgbToHex(200, 200, 200);
 }
 
 function drawCities(topo, cities) {
@@ -201,19 +248,22 @@ function continueDraw(countries){
 
 function getDiaglogHtml(users){
 	$(".modal-body").html("");
-	var html = "<div style='overflow:scroll; height:400px;'>";
-	html +="<table>";
+	var html = "<div style='overflow:auto; height:400px;'>";
+	html +="<table class='table-striped table-hover' >";
+	html +="<tr><th></th><th>Benutzer</th><th>Anzahl Commits</th></td></tr>";
 	for(var i=0; i< users.length; i++){
 		html+="<tr><td>";
 		$(".modal-body").append("<p>"+users[i].login+"</p>");
 //		console.log(users[i]);
 		var profilepic = "https://avatars.githubusercontent.com/"+users[i].login;
-		var htmlimage = "<img src="+profilepic+" width='50px' height='50px'/>";
+		var htmlimage = "<img src="+profilepic+" width='75px' height='75px'/>";
 		html+= htmlimage;
-		html+="</td><td>";
+		html+="</td><td width='250px' >";
 		html+="<a href='https://github.com/"+users[i].login+"' target='_blank'>";
-		html+="<h4>"+users[i].login+"</h4>";
+		html+="<h3>"+users[i].login+"</h3>";
 		html+="</a>";
+		html+="</td><td>";
+		html+="<h3>"+users[i].amount+"</h3>";
 		html+="</td></tr>"
 	}
 	html += "</table></div>"
@@ -311,39 +361,35 @@ function drawCityPoints(lat, lon, city, amount) {
 	aktCityPoint = g.append("g").attr("class", "gpoint");
 	
 	var percent = amount / maxAmountCommitsCity;
-	var relAmount = percent * 15 ;
+//	var relAmount = percent * 15 ;
 	
 	
 	
 	cityPoints[city] = aktCityPoint;
-	var r = relAmount / (2 * Math.PI);
-
+	var flaecheninhalt = 80 / (2 * Math.PI);
+	var radius = flaecheninhalt * percent;
+	var citynameclass = "citytooltip"+city.replace(/\s/g, "_");
 	aktCityPoint.append("svg:circle")
 		.attr("cx", x)
 		.attr("cy", y)
 		.attr("title", city+"") 
 		.attr("fill","red")
-		.attr("fill-opacity",0.7)
-		.attr("class","citytooltip"+city)
-		.attr("r", r);
-	/*
-	$(".citytooltip"+city).qtip({ 
-	    content: {
-	        text: city
-	    } 
-	});*/ 
+		.attr("fill-opacity",0.6)
+		.attr("class",citynameclass+"")
+		.attr("r", radius);
+
 	
-	$(".citytooltip"+city).mouseover(function(evt) {
+	$("."+citynameclass).mouseover(function(evt) {
 	  var cName = evt.currentTarget.getAttribute("title");
 	  var cAmount = getCommitsAmountCity(cName);
 	  $("#lblLocation").html(cName);
 	  $("#lblAmountCommits").html(cAmount);
 	});
-	$(".citytooltip"+city).mouseout(function(evt) {
+	$("."+citynameclass).mouseout(function(evt) {
 		$("#lblLocation").html("");
 		$("#lblAmountCommits").html("");
 	});
-	$(".citytooltip"+city).click(function(evt) {
+	$("."+citynameclass).click(function(evt) {
 		$(".modal-body").html("");
 		var cName = evt.currentTarget.getAttribute("title");
 		var amount = getCommitsAmountCity(cName);

@@ -1,8 +1,8 @@
 package de.fhms.mdm.hbase.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class City {
 
@@ -10,7 +10,7 @@ public class City {
 	private double longitude;
 	private double latitude;
 	private Integer amount;
-	private List<User> users;
+	private ArrayList<User> users;
 
 	public City(String city, double longitude, double latitude, int amount) {
 		super();
@@ -53,23 +53,59 @@ public class City {
 		this.amount = amount;
 	}
 
+	public void raiseCommit(String login) {
+		for (int i = 0; i < this.users.size(); i++) {
+			if (login.equals(this.users.get(i).getLogin())) {
+				this.users.get(i).raiseCommits();
+				break;
+			}
+		}
+		this.amount++;
+	}
+
 	public void raiseCommit() {
 		this.amount++;
 	}
 
-	public List<User> getUsers() {
-		return users;
+	public ArrayList<User> getUsers() {
+//		this.users.sort(UserComparator);
+		// Sorting
+		Collections.sort(this.users, new Comparator<User>() {
+			@Override
+			public int compare(User user2, User user1) {
+				return user1.getAmount().compareTo(user2.getAmount());
+			}
+		});
+		return this.users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(ArrayList<User> users) {
 		this.users = users;
 	}
 
-	public void addUser(User newUsers) {
-		if (!this.users.contains(newUsers)) {
-			this.users.add(newUsers);
+	public void addUser(String login, String email) {
+		boolean found = false;
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i).getLogin().equals(login)) {
+				found = true;
+			}
+		}
+		if (!found) {
+			this.users.add(new User(login, email));
 		}
 	}
+
+	public static Comparator<User> UserComparator = new Comparator<User>() {
+
+		public int compare(User u1, User u2) {
+
+			Integer fruitName1 = u1.getAmount();
+			Integer fruitName2 = u2.getAmount();
+
+			return fruitName2.compareTo(fruitName1);
+		}
+
+	};
 
 	@Override
 	public int hashCode() {
@@ -95,6 +131,5 @@ public class City {
 			return false;
 		return true;
 	}
-
 
 }

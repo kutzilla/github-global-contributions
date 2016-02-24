@@ -3,24 +3,16 @@ package de.fhms.mdm.hbase.data;
 public class AllCommitData {
 
 
-	private Integer gesamtAmountCommits;
-	private Integer maxAmountCommitsCountry;
-	private Integer maxAmountCommitsCity;
+	private int gesamtAmountCommits;
+	private int maxAmountCommitsCountry;
+	private int maxAmountCommitsCity;
 	private Country[] countries;
 	private City[] cities;
 
-
-	public AllCommitData(City[] cities, Country[] countries, Integer gesamtAmountCommits, Integer maxAmountCommitsCountry,
-			Integer maxAmountCommitsCity) {
-		super();
-		this.cities = cities;
-		this.gesamtAmountCommits = gesamtAmountCommits;
-		this.maxAmountCommitsCountry = maxAmountCommitsCountry;
-		this.maxAmountCommitsCity = maxAmountCommitsCity;
-		this.countries = countries;
-	}
-
-	public AllCommitData() {
+	public AllCommitData(){
+		gesamtAmountCommits = 0;
+		maxAmountCommitsCountry = 0;
+		maxAmountCommitsCity = 0;
 	}
 
 	public City[] getCities() {
@@ -61,6 +53,12 @@ public class AllCommitData {
 
 	public void setMaxAmountCommitsCity(Integer maxAmountCommitsCity) {
 		this.maxAmountCommitsCity = maxAmountCommitsCity;
+	}
+
+
+	public void raiseCommitAmount() {
+		this.gesamtAmountCommits++;
+		
 	}
 
 }
