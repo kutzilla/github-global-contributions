@@ -1,53 +1,21 @@
+# Big Data Engineering - FH Münster - Projekt
+
+[![Build Status](https://travis-ci.com/kutzilla/bde-project.svg?token=sVFsn6MbRsFLvenMx9sG&branch=master)](https://travis-ci.com/kutzilla/bde-project)
 
 
-###Preparation###
-######Selektion#######
- Auswahl der Datenquelle(n) mit Begründung.
+Alle Informationen zu dem Bewertungsschema sind der in der Präsentation.
+Dazu hier weitere Ergänzungen:
 
-###Ingest###
-######Batch######
-Import von relationalen Daten mit z.B. Sqoop.
-
-
-######Streaming######
-Kontinuierliche Datenaufnahme mit Flume oder Spark Streaming.
-
-###Staging###
-######Storage######
+###Staging###Storage######
 Auswahl und Erläuterung von:
 - Dateiformate
+	- alle Dateien liegen im Json vor und werden strukturiert von den APIs (Github, Google Geo) zurückgeliefert und zur weiteren Verarbeitung beibehalten.
 - Komprimierungsformate
-
-
-######Partitioning######
-Erläuterung geeigneter Strategien für das Aufteilen der Daten in HDFS.
-
-
-######Information Architecture######
-Access Control Regeln und Organisation der Daten für Mandantenfähigkeit erläutern.
+	- zur Archivierung der verarbeiteten User und Commit Daten (Pig-Scripte, Verschieben vom Ordner Processing nach Archive) werden die Dateien im B2Zip Format komprimiert und verschoben.
 
 
 ######Data Management######
 Regeln für Retention/Lifecycle/Data Management erläutern.
+- die Verarbeiteten Daten werden, wie erwähnt bereits archiviert im HDFS
+- die resultierenden Nutzdaten im HBase für die Analyse im Frondend können nach einem bestimmten Zeitraum (Speichermangel oder zu alt) archiviert und aus der HBase entfernt werden.
 
-###Processing###
-######Transformation######
-Daten mit Tools we Crunch oder Cascading aufbereiten.
-
-
-######Analytics######
-Daten mit Tools wie Spark oder Giraph analysieren.
-
-
-######Machine Learning######
-ML Modelle mit Spark oder MapReduce erstellen und anwenden.
-
-
-###Access###
-Zugang zu Daten demonstrieren, mit Hilfe von z.B. Kite SDK, JDBC über Hive oder Impala, der nativen APIs (HDFS, HBase).
-
-###Automation###
-Mit Oozie Data Pipelines automatisieren, mit Hilfe von Coordinators (also ereignis- oder zeitgesteuerte Verarbeitung).
-
-###Production###
-Pipeline mit Hilfe von Continuous Integration (CI) (z.B. Maven mit Jenkins) durchgängig testen. Beschreibung von Cluster Umgebungen.
