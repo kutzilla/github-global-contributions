@@ -14,7 +14,7 @@ public class User implements Comparable<User> {
 
 	public String getLogin() {
 		return login;
-	}
+	} 
 
 	public void setLogin(String login) {
 		this.login = login;

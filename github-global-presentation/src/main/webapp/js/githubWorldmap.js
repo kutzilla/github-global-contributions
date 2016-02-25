@@ -62,7 +62,7 @@ d3.json("data/world-topo-min.json", function(error, world) {
 	
 	myApp.showWait();
 	
-	var urlRepos = 'http://10.60.67.4:8090/global-github-contributions/rest/json/github/getAllRepos';
+	var urlRepos = 'http://localhost:8090/global-github-contributions/rest/json/github/getAllRepos';
 	$.getJSON(urlRepos, function(repos) {
 		loadComboRepo(repos);
 		dataReload();
@@ -82,7 +82,7 @@ function dataReload(){
 		var repo = repoChooser.options[repoChooser.selectedIndex].value;
 		var von = document.getElementById('from').value;
 		var bis = document.getElementById('to').value;
-		var urlHBaseData = "http://10.60.67.4:8090/global-github-contributions/rest/json/github/getAllCommitsData?repo="+repo+"&from="+von+"&to="+bis;
+		var urlHBaseData = "http://localhost:8090/global-github-contributions/rest/json/github/getAllCommitsData?repo="+repo+"&from="+von+"&to="+bis;
 
 		$.getJSON(urlHBaseData, function(data) { 
 			console.log("neueDaten: cities:"+data.cities.length+", countries: "+data.countries.length); 

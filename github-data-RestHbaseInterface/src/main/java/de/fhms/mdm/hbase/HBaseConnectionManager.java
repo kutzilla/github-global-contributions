@@ -198,11 +198,11 @@ public class HBaseConnectionManager {
 			}
 		}
 		allCommitData.raiseCommitAmount();
-		City cityObj = resultCity.get(city);
+		City cityObj = resultCity.get(city+"_"+country);
 		if (cityObj == null) {
 			if (!longitude.isEmpty() && !latitude.isEmpty() && !city.isEmpty()) {
 				cityObj = new City(city, Double.parseDouble(longitude), Double.parseDouble(latitude), 0);
-				resultCity.put(city, cityObj);
+				resultCity.put(city+"_"+country, cityObj);
 			}
 		}
 		Country countryObj = resultCountry.get(country);

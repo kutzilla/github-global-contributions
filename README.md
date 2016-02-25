@@ -4,13 +4,13 @@
 
 ###Deployment
 
-Download Apache Tomcat 8 und entpacken
+###Download Apache Tomcat 8 und entpacken
 http://apache.mirror.iphh.net/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz
 
 Kopieren nach /opt/apache-tomcat-8.0.32
 
-Apache Port auf 8090 ändern:
-Bearbeiten der Konfigurationsdatei: /opt/apache-tomcat-8.0.32/conf/server.xml
+###Apache Port auf 8090 ändern:
+###Bearbeiten der Konfigurationsdatei: /opt/apache-tomcat-8.0.32/conf/server.xml
     ...
     <Connector port="8090" protocol="HTTP/1.1"
                    connectionTimeout="20000"
@@ -27,3 +27,10 @@ Bearbeiten der Konfigurationsdatei: /opt/apache-tomcat-8.0.32/conf/server.xml
 
 Kopieren    github-data-RestHbaseInterface/target/global-github-contributions.war   nach    /opt/apache-tomcat-8.0.32/webapps/
 Kopieren    github-global-presentation/target/github-global-presentation.war    nach    /opt/apache-tomcat-8.0.32/webapps/
+
+###Starten des Tomcats
+sudo bash /bin/catalina.sh start
+
+
+###Webseite erreichbar unter:
+http://localhost:8090/global-github-contributions/rest/json/github/getAllCommitsOfAllCountries
