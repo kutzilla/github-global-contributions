@@ -1,36 +1,53 @@
-# Big Data Engineering - FH Münster - Projekt
-
-[![Build Status](https://travis-ci.com/kutzilla/bde-project.svg?token=sVFsn6MbRsFLvenMx9sG&branch=master)](https://travis-ci.com/kutzilla/bde-project)
-
-###Deployment
-
-###Download Apache Tomcat 8 und entpacken
-http://apache.mirror.iphh.net/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz
-
-Kopieren nach /opt/apache-tomcat-8.0.32
-
-###Apache Port auf 8090 ändern:
-###Bearbeiten der Konfigurationsdatei: /opt/apache-tomcat-8.0.32/conf/server.xml
-    ...
-    <Connector port="8090" protocol="HTTP/1.1"
-                   connectionTimeout="20000"
-                   redirectPort="8443" />
-        <!-- A "Connector" using the shared thread pool-->
-        <!--
-        <Connector executor="tomcatThreadPool"
-                   port="8090" protocol="HTTP/1.1"
-                   connectionTimeout="20000"
-                   redirectPort="8443" />
-        -->
-    ...
 
 
-Kopieren    github-data-RestHbaseInterface/target/global-github-contributions.war   nach    /opt/apache-tomcat-8.0.32/webapps/
-Kopieren    github-global-presentation/target/github-global-presentation.war    nach    /opt/apache-tomcat-8.0.32/webapps/
+###Preparation###
+######Selektion#######
+ Auswahl der Datenquelle(n) mit Begründung.
 
-###Starten des Tomcats
-sudo bash /bin/catalina.sh start
+###Ingest###
+######Batch######
+Import von relationalen Daten mit z.B. Sqoop.
 
 
-###Webseite erreichbar unter:
-http://localhost:8090/global-github-contributions/rest/json/github/getAllCommitsOfAllCountries
+######Streaming######
+Kontinuierliche Datenaufnahme mit Flume oder Spark Streaming.
+
+###Staging###
+######Storage######
+Auswahl und Erläuterung von:
+- Dateiformate
+- Komprimierungsformate
+
+
+######Partitioning######
+Erläuterung geeigneter Strategien für das Aufteilen der Daten in HDFS.
+
+
+######Information Architecture######
+Access Control Regeln und Organisation der Daten für Mandantenfähigkeit erläutern.
+
+
+######Data Management######
+Regeln für Retention/Lifecycle/Data Management erläutern.
+
+###Processing###
+######Transformation######
+Daten mit Tools we Crunch oder Cascading aufbereiten.
+
+
+######Analytics######
+Daten mit Tools wie Spark oder Giraph analysieren.
+
+
+######Machine Learning######
+ML Modelle mit Spark oder MapReduce erstellen und anwenden.
+
+
+###Access###
+Zugang zu Daten demonstrieren, mit Hilfe von z.B. Kite SDK, JDBC über Hive oder Impala, der nativen APIs (HDFS, HBase).
+
+###Automation###
+Mit Oozie Data Pipelines automatisieren, mit Hilfe von Coordinators (also ereignis- oder zeitgesteuerte Verarbeitung).
+
+###Production###
+Pipeline mit Hilfe von Continuous Integration (CI) (z.B. Maven mit Jenkins) durchgängig testen. Beschreibung von Cluster Umgebungen.
