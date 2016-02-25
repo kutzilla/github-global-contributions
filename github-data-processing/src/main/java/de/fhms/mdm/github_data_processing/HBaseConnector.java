@@ -8,6 +8,8 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.VoidFunction;
+import scala.Tuple2;
 
 /**
  * Created by Matthias on 23.02.16.
@@ -53,9 +55,12 @@ public class HBaseConnector {
                 jsc.newAPIHadoopRDD(hbaseConf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         System.out.println("Die Location Anzahl umfasst: " + locations.count());
 
-        locations.foreach((pair) -> {
-            String key = new String(pair._1().get());
-            System.out.println(key);
+        locations.foreach(new VoidFunction<Tuple2<ImmutableBytesWritable, Result>>() {
+            @Override
+            public void call(Tuple2<ImmutableBytesWritable, Result> pair) throws Exception {
+                String key = new String(pair._1().get());
+                System.out.println(key);
+            }
         });
 
     }
