@@ -18,8 +18,6 @@ import java.net.NetworkInterface;
 import java.util.*;
 
 public class GitHubCommitDataMapper extends TableMapper<RepositoryWritable,Text> {
-    private static final String API_TOKEN = "56cb7372fefdee1cefac895658c2270ad039d18f";
-    private static final String CLIENT_USER = "schleusenfrosch";
 
     @Override
     public void map(ImmutableBytesWritable row, Result value, Context context) throws IOException, InterruptedException {
